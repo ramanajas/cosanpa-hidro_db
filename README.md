@@ -48,3 +48,10 @@ If you're using Node.JS 16+, you must run `npm install --legacy-peer-deps`
 `npm start`
 
 This is a ongoing project and updates will be placed here
+
+
+## Transfer code to a remote server manualy 
+
+    rsync -azve 'ssh -p PORTA' --exclude=.git ORIGEM DESTINHO
+
+	rsync -azve 'ssh' --exclude=.git ad-hoc lab:~

@@ -8,3 +8,7 @@ server/public/build/
 */.env.production
 
 server/cred.json
+db_backup_final-20230405.sql.zip
+
+*.sql
+
