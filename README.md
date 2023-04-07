@@ -86,7 +86,48 @@ This is a ongoing project and updates will be placed here
                 --env POSTGRES_PASSWORD=desenv \
                 cosanpa/postgis:11-3.3 
 
-    
+### NodeJ
+
+      docker container rm nodej -f \
+    ; docker image rm cosanpa/nodej:12 \
+    ; docker image build -t cosanpa/nodej:12 ./server \
+    ; docker container run \
+                --detach \
+                --name nodej \
+                --publish 8080:8081 \
+                --restart always \
+                --volume /etc/localtime:/etc/localtime:ro \
+                --volume ./server:/usr/src/app \
+                --workdir /usr/src/app
+                --env PORT=8081 \
+                --env NODE_ENV=production \
+                --env JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R' \
+                --env HOST_URL='http://localhost' \
+                cosanpa/nodej:12 \
+                    'nodemon -L server.js'
+                    
+### Hasura
+      docker container rm graph -f \
+    ; docker image rm cosanpa/graph:1.3.3 \
+    ; docker image build -t cosanpa/graph:1.3.3 ./hasura \
+    ; docker container run \
+                --detach \
+                --name graph \
+                --publish 3001:3000 \
+                --publish 9893:9693 \
+                --publish 9895:9695 \
+                --restart always \
+                --env HASURA_GRAPHQL_DATABASE_URL=postgres://gis:desenv@localhost:5432/hidro_db_dev \
+                --env HASURA_GRAPHQL_ENABLE_CONSOLE=true \
+                --env HASURA_GRAPHQL_ENABLED_LOG_TYPES="startup, http-log" \
+                --env HASURA_GRAPHQL_SERVER_PORT=3000 \
+                --env HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey \
+                --env HASURA_GRAPHQL_JWT_SECRET='{"type":"HS256", "key": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' \
+                --env HASURA_GRAPHQL_MIGRATIONS_DIR=/hasura/migrations \
+                cosanpa/graph:1.3.3
+
+      # postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]
+
 ### Zabbix
     
       docker container rm nginx -f \
