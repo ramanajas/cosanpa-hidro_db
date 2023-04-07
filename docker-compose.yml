@@ -1,9 +1,30 @@
 version: '3.8'
 
+volumes:
+  giswater-pg_data:
+    driver: local
+
 services:
+  
+  postgis:
+    image: cosanpa/postgis:11-3.3
+    build: 
+      context: ./postgis
+      dockerfile: ./Dockerfile
+    ports:
+      - '5432:5432'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /backup/container:/backup
+      - giswater-pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: gis
+      POSTGRES_PASSWORD: desenv
+    networks:
+      - hidro_db_net
+
   nodejs-server:
-    image: nodejs-server
-    container_name: nodejs-server
+    image: cosanpa/nodejs-server
     build:
       context: ./server
       dockerfile: ./Dockerfile
@@ -13,6 +34,7 @@ services:
     ports:
       - '8080:8081'
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./server:/usr/src/app
     environment:
       PORT: '8081'
@@ -21,6 +43,7 @@ services:
       HOST_URL: 'http://localhost'
     depends_on:
       - 'graphql-engine'
+      - postgis
     networks:
       - hidro_db_net
 
@@ -28,32 +51,14 @@ services:
     build:
       context: .
       dockerfile: ./nginx/Dockerfile
-    image: nginx
-    container_name: container-lb
+    image: cosanpa/nginx
     ports:
-      - '80:80'
+      - 80:80
+      - 443:443
     networks:
       - hidro_db_net
-  #CLIENT SERVER
-
-  #react_client:
-  #  build: ./client
-  #  working_dir: /usr/src/app
-  #  command: "npm run start"
-  #  restart: always
-  #  ports:
-  #    - "80:8085"
-  #  volumes:
-  #    - ./client/src:/usr/src/app/src
-  #    - ./client/public:/usr/src/app/public
-  #    - ./usr/src/app/node_modules
-  #  environment:
-  #    -REACT_APP_PORT: "8085"
-  #  links:
-  #    - nodejs-server
 
   graphql-engine:
-    container_name: graphql-engine
     image: hasura/graphql-engine:v1.3.3
     restart: always
     volumes:
@@ -72,6 +77,27 @@ services:
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     networks:
       - hidro_db_net
+    depends_on:
+      - postgis
+
+  react_client:
+    build: ./client
+    working_dir: /usr/src/app
+    command: "npm run start"
+    restart: always
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./client/src:/usr/src/app/src
+      - ./client/public:/usr/src/app/public
+      - ./usr/src/app/node_modules
+    environment:
+      -REACT_APP_PORT: "8085"
+    links:
+      - nodejs-server
+    depends_on:
+      - postgis
+
 networks:
   hidro_db_net:
     driver: bridge

@@ -55,3 +55,46 @@ This is a ongoing project and updates will be placed here
     rsync -azve 'ssh -p PORTA' --exclude=.git ORIGEM DESTINHO
 
 	rsync -azve 'ssh' --exclude=.git ad-hoc lab:~
+
+## Build Manualy
+
+      cd ../nginx \
+    ; docker image build -t cosanpa/nginx . \
+    ; cd ../hasura \
+    ; docker image build -t cosanpa/graphql-engine:v1.3.3 . \
+    ; cd ../server \
+    ; docker image build -t cosanpa/nodejs-server:12 . \
+    ; echo "Imagens" \
+    ; docker image ls \
+    ; echo "Containers" \
+    ; docker container ls \
+    ; echo "Postgis" \
+    ; cd ../postgis \
+    ; docker image build -t cosanpa/postgis:11-3.3 . \
+    ; docker volume create postgresql_data \
+    ; docker container run \
+                --detach \
+                --name db \
+                --publish 5432:5432 \
+                --restart always \
+                --volume postgresql_data:/var/lib/postgresql/data \
+                --env POSTGRES_USER=gis \
+                --env POSTGRES_PASSWORD=desenv \
+                cosanpa/postgis:11-3.3
+
+### PostgreSQL zerado
+      docker container rm db -f \
+    ; docker volume rm postgresql_data \
+    ; docker image rm cosanpa/postgis:11-3.3 \
+    ; docker image build -t cosanpa/postgis:11-3.3 ./postgis \
+    ; docker volume create postgresql_data \
+    ; docker container run \
+                --detach \
+                --name db \
+                --publish 5432:5432 \
+                --restart always \
+                --volume postgresql_data:/var/lib/postgresql/data \
+                --volume $PWD/database:/backup \
+                --env POSTGRES_USER=gis \
+                --env POSTGRES_PASSWORD=desenv \
+                cosanpa/postgis:11-3.3 
