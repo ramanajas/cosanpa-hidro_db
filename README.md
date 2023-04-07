@@ -66,23 +66,10 @@ This is a ongoing project and updates will be placed here
     ; docker image build -t cosanpa/nodejs-server:12 . \
     ; echo "Imagens" \
     ; docker image ls \
-    ; echo "Containers" \
-    ; docker container ls \
-    ; echo "Postgis" \
-    ; cd ../postgis \
-    ; docker image build -t cosanpa/postgis:11-3.3 . \
-    ; docker volume create postgresql_data \
-    ; docker container run \
-                --detach \
-                --name db \
-                --publish 5432:5432 \
-                --restart always \
-                --volume postgresql_data:/var/lib/postgresql/data \
-                --env POSTGRES_USER=gis \
-                --env POSTGRES_PASSWORD=desenv \
-                cosanpa/postgis:11-3.3
+    
 
 ### PostgreSQL zerado
+
       docker container rm db -f \
     ; docker volume rm postgresql_data \
     ; docker image rm cosanpa/postgis:11-3.3 \
@@ -98,3 +85,20 @@ This is a ongoing project and updates will be placed here
                 --env POSTGRES_USER=gis \
                 --env POSTGRES_PASSWORD=desenv \
                 cosanpa/postgis:11-3.3 
+
+    
+### Zabbix
+    
+      docker container rm nginx -f \
+    ; docker container run \
+                --detach \
+                --restart always \
+                --publish 80:80 \
+                --publish 443:443 \
+                --name nginx \
+                --volume /etc/localtime:/etc/localtime:ro \
+                --volume ./nginx/conf:/etc/nginx/conf.d \
+                --volume ./nginx/logs:/var/log/nginx \
+                nginx:latest
+
+
