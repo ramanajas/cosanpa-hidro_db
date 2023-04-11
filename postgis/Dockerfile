@@ -1,6 +1,7 @@
 FROM postgis/postgis:11-3.3
-# LABEL maintainer="ramanajas@prodigasistemas.com.br"
-# LABEL maintainer="http://www.prodigasistemas.com.br/" 
+# LABEL maintainer='COSANPA/PRODIGA'
+# LABEL maintainer=ramanajas@prodigasistemas.com.br
+# LABEL maintainer=rafaelneto.g@gmail.com
 
 # USER root
 
