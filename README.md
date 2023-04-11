@@ -60,7 +60,7 @@ This is a ongoing project and updates will be placed here
 
     rsync -azve 'ssh -p PORTA' --exclude=.git ORIGEM DESTINHO
 
-	rsync -azve 'ssh' --exclude=.git ad-hoc lab:~
+	rsync -azve 'ssh' --exclude=.git ../cosanpa-hidro_db lab:~
 
 ## Build Manualy
     
@@ -121,8 +121,8 @@ Query
 ### NodeJ
 
       docker container rm nodej -f \
-    ; docker image rm cosanpa/nodej:12 \
-    ; docker image build -t cosanpa/nodej:12 $PWD/server \
+    ; docker image rm cosanpa/nodej:14 \
+    ; docker image build -t cosanpa/nodej:14 $PWD/application \
     ; docker container run \
                 --detach \
                 --name server \
@@ -133,7 +133,7 @@ Query
                 --env NODE_ENV=production \
                 --env JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R' \
                 --env HOST_URL='http://localhost' \
-                cosanpa/nodej:12
+                cosanpa/nodej:14
 
 #
 

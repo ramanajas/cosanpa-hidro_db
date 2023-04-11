@@ -1,4 +1,5 @@
-FROM node:12-alpine as builder
+FROM node:14.21.3-alpine3.17
+#node:12-alpine as builder
 # LABEL maintainer='COSANPA/PRODIGA'
 # LABEL maintainer=ramanajas@prodigasistemas.com.br
 # LABEL maintainer=rafaelneto.g@gmail.com
@@ -11,7 +12,8 @@ RUN   npm cache verify \
    && npm install \
    && npm run build
 
-FROM node:12-alpine
+FROM node:14.21.3-alpine3.17
+#node:12-alpine
 
 COPY --from=builder /var/www/html/build/ /var/www/html/public/
 COPY ./server /var/www/html
