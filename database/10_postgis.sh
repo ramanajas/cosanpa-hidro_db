@@ -19,6 +19,7 @@ for DB in template_postgis "$POSTGRES_DB"; do
 	"${psql[@]}" --dbname="$DB" <<-'EOSQL'
 		CREATE EXTENSION IF NOT EXISTS postgis;
 		CREATE EXTENSION IF NOT EXISTS postgis_topology;
+		CREATE EXTENSION IF NOT EXISTS uuid-ossp;
 		-- Reconnect to update pg_setting.resetval
 		-- See https://github.com/postgis/docker-postgis/issues/288
 		\c

@@ -32,8 +32,8 @@ Before compose the application with `docker compose up -d`, you must run `npm in
 
 Inside the docker-compose file it must be modified some enviroment variables to
 
-    `HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@docker.for.win.localhost:5432/hidro_db_dev`
-
+    `HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:desenv@192.168.100.105:5432/hidro_db_dev`
+    Ex:
     postgresql://[user[:password]@][IP_DO_SERVIDOR_DE_BANCO][:port][/dbname][?param1=value1&...]
 
 
@@ -65,12 +65,12 @@ This is a ongoing project and updates will be placed here
 ## Build Manualy
     
 
-### PostgreSQL zerado
+### PostgreSQL
 
       docker container rm db -f \
     ; docker volume rm postgresql_data \
     ; docker image rm cosanpa/postgis:11-3.3 \
-    ; docker image build -t cosanpa/postgis:11-3.3 ./postgis \
+    ; docker image build -t cosanpa/postgis:11-3.3 $PWD/database \
     ; docker volume create postgresql_data \
     ; docker container run \
                 --detach \
@@ -78,14 +78,14 @@ This is a ongoing project and updates will be placed here
                 --publish 5432:5432 \
                 --restart always \
                 --volume postgresql_data:/var/lib/postgresql/data \
-                --volume $PWD/database:/backup \
+                --volume $PWD/database/container:/backup \
                 --env POSTGRES_USER=gis \
                 --env POSTGRES_PASSWORD=desenv \
                 cosanpa/postgis:11-3.3 
 
 #
 
-### Hasura
+### Hasura without migrations
       docker container rm graph -f \
     ; docker container run \
                 --detach \
@@ -100,10 +100,8 @@ This is a ongoing project and updates will be placed here
                 --env HASURA_GRAPHQL_SERVER_PORT=3000 \
                 --env HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey \
                 --env HASURA_GRAPHQL_JWT_SECRET='{"type":"HS256", "key": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' \
-                --env HASURA_GRAPHQL_MIGRATIONS_DIR=/hasura/migrations \
                 hasura/graphql-engine:v1.3.3
                 
-      # postgresql://[user[:password]@][IP_DO_SERVIDOR_DE_BANCO][:port][/dbname][?param1=value1&...]
 
 http://localhost:3001/
 
@@ -124,7 +122,7 @@ Query
 
       docker container rm nodej -f \
     ; docker image rm cosanpa/nodej:12 \
-    ; docker image build -t cosanpa/nodej:12 ./server \
+    ; docker image build -t cosanpa/nodej:12 $PWD/server \
     ; docker container run \
                 --detach \
                 --name server \
@@ -153,37 +151,14 @@ Query
                 --volume ./nginx/logs:/var/log/nginx \
                 nginx:latest
 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #
 #
 
- ### Build Hasura
+ ### Hasura with migrations
       docker container rm graph -f \
     ; docker image rm cosanpa/graph:1.3.3 \
-    ; docker image build -t cosanpa/graph:1.3.3 ./hasura \
+    ; docker image build -t cosanpa/graph:1.3.3 $PWD/hasura \
     ; docker container run \
                 --detach \
                 --name graph \

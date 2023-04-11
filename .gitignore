@@ -1,16 +1,16 @@
 **/logs
 
-*/node_modules/
+**/node_modules/
 
-server/public/build/
+**/build/
 
-*/debug.log
+**/debug.log
 
-*/.env
-*/.env.production
+**/.env*
 
-server/cred.json
-db_backup_final-20230405.sql.zip
+**/cred.json
 
-*.sql
+**/*.sql
+
+.credentials
 
