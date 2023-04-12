@@ -4,7 +4,7 @@ Hidro-db is a platform that manages mainly water wells, but also other assets th
 
 The platform is composed of a PostgreSQL database for data persistence, a Hasura server to provide fully customizable and automated GraphQl endpoint, a Node.js server to serve some custom logic like authentication and authorization, or any other specific needs, and a React front-end app to provide an accessible web interface that allows users, employees, and decision-makers to easily visualize data.
 
-![Hidro-db screen examples](/server/statics/src/assets/images/hidro-db_exemplos-01.png)
+![Hidro-db screen examples](/application/statics/src/assets/images/hidro-db_exemplos-01.png)
 
 ### Maintainer 
 rafaelneto.g@gmail.com
