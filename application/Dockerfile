@@ -9,7 +9,7 @@ COPY ./statics /var/www/html
 WORKDIR /var/www/html
 
 RUN   npm cache verify \
-   && npm install \
+   && npm install --legacy-peer-deps \
    && npm run build
 
 FROM node:14.21.3-alpine3.17
