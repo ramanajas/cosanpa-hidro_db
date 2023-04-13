@@ -125,12 +125,7 @@ http://localhost:3001/
 
 Query
 
-    {
-      pocos {
-        id
-        nome
-      }
-    }
+    { pocos { id nome } }
 
 #
 
@@ -191,3 +186,12 @@ Query
                 --env HASURA_GRAPHQL_JWT_SECRET='{"type":"HS256", "key": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' \
                 --env HASURA_GRAPHQL_MIGRATIONS_DIR=/hasura/migrations \
                 cosanpa/graph:1.3.3
+
+
+
+### Compile Manualy
+
+      rm -rf node_modules/ build/ package-lock.json \
+    && npm cache verify \
+    && npm install --legacy-peer-deps \
+    && npm audit
