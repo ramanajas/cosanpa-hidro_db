@@ -60,14 +60,16 @@ This is a ongoing project and updates will be placed here
 
     rsync -azve 'ssh -p PORTA' --exclude=.git ORIGEM DESTINHO
 
-	rsync -azve 'ssh' --exclude=.git ../cosanpa-hidro_db lab:~
+	  rsync -azve 'ssh' --exclude=logs --exclude=.git ../cosanpa-hidro_db lab:~
 
 ## Build Manualy
     
 
 ### PostgreSQL
 
-      docker container rm db -f \
+      mkdir -p $PWD/database/container/logs \
+    ; sudo chown -R 999:999 $PWD/database/container \
+    ; docker container rm db -f \
     ; docker volume rm postgresql_data \
     ; docker image rm cosanpa/postgis:11-3.3 \
     ; docker image build -t cosanpa/postgis:11-3.3 $PWD/database \
@@ -77,18 +79,20 @@ This is a ongoing project and updates will be placed here
                 --name db \
                 --publish 5432:5432 \
                 --restart always \
+                --volume /etc/localtime:/etc/localtime:ro \
                 --volume postgresql_data:/var/lib/postgresql/data \
                 --volume $PWD/database/container:/backup \
                 --env POSTGRES_USER=gis \
                 --env POSTGRES_PASSWORD=desenv \
                 cosanpa/postgis:11-3.3 
 
+    docker container exec db ./restore.sh
+
 #
 
 ### Hasura without migrations
 
-      export DATABASE_URL='postgres://gis:desenv@192.168.15.134:5432/hidro_db_dev' \
-    ; export JWT_SECRET='{"type":"HS256", "key": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' \
+      export DATABASE_URL='postgres://gis:desenv@192.168.31.240:5432/hidro_db_dev' \
     ; docker container rm graph -f \
     ; docker container run \
                 --detach \
@@ -97,15 +101,17 @@ This is a ongoing project and updates will be placed here
                 --publish 9893:9693 \
                 --publish 9895:9695 \
                 --restart always \
+                --volume /etc/localtime:/etc/localtime:ro \
                 --env HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
                 --env HASURA_GRAPHQL_ENABLE_CONSOLE=true \
                 --env HASURA_GRAPHQL_ENABLED_LOG_TYPES="startup, http-log" \
                 --env HASURA_GRAPHQL_SERVER_PORT=3000 \
                 --env HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey \
-                --env HASURA_GRAPHQL_JWT_SECRET=$JWT_SECRET \
+                --env HASURA_GRAPHQL_JWT_SECRET='{"type":"HS256", "key": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' \
                 hasura/graphql-engine:v1.3.3
 
 #
+                
                 
     Ex:
     postgresql://[user[:password]@][IP_DO_SERVIDOR_DE_BANCO][:port][/dbname][?param1=value1&...]
@@ -163,10 +169,11 @@ Query
 
 
 #
-#
 
  ### Hasura with migrations
-      docker container rm graph -f \
+
+      export DATABASE_URL='postgres://gis:desenv@192.168.31.240:5432/hidro_db_dev' \
+    ; docker container rm graph -f \
     ; docker image rm cosanpa/graph:1.3.3 \
     ; docker image build -t cosanpa/graph:1.3.3 $PWD/hasura \
     ; docker container run \
@@ -176,7 +183,7 @@ Query
                 --publish 9893:9693 \
                 --publish 9895:9695 \
                 --restart always \
-                --env HASURA_GRAPHQL_DATABASE_URL=postgres://gis:desenv@192.168.31.100:5432/hidro_db_dev \
+                --env HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
                 --env HASURA_GRAPHQL_ENABLE_CONSOLE=true \
                 --env HASURA_GRAPHQL_ENABLED_LOG_TYPES="startup, http-log" \
                 --env HASURA_GRAPHQL_SERVER_PORT=3000 \
