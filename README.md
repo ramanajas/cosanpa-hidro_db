@@ -191,7 +191,4 @@ Query
 
 ### Compile Manualy
 
-      rm -rf node_modules/ build/ package-lock.json \
-    && npm cache verify \
-    && npm install --legacy-peer-deps \
-    && npm audit
+rm -rf node_modules/ build/ package-lock.json && npm install --legacy-peer-deps && npm update && npm -g outdated --depth=3
