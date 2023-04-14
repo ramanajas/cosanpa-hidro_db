@@ -132,8 +132,11 @@ Query
 ### NodeJ
 
       docker container rm nodej -f \
-    ; docker image rm cosanpa/nodej:14 \
-    ; docker image build -t cosanpa/nodej:14 $PWD/application \
+    ; docker image rm cosanpa/nodej:12 \
+    ; docker image build \
+                --progress plain \
+                -t cosanpa/nodej:12 \
+                $PWD/application \
     ; docker container run \
                 --detach \
                 --name server \
@@ -144,7 +147,7 @@ Query
                 --env NODE_ENV=production \
                 --env JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R' \
                 --env HOST_URL='http://localhost' \
-                cosanpa/nodej:14
+                cosanpa/nodej:12
 
 #
 
