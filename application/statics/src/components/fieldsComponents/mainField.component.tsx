@@ -7,6 +7,8 @@ import { useHistoryState } from '../../utils/dataState.manager';
 
 import { FieldComponentType } from '../types/components.types';
 
+import styles from './mainField.module.scss';
+
 const useStyles = makeStyles((theme) => ({
   mainInput: {
     fontWeight: 700,
@@ -15,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-import styles from './mainField.module.scss';
 
 const NULL_VALUE = { value: '', label: '' };
 
