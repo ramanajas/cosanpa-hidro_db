@@ -1,22 +1,18 @@
-FROM node:16.20.0-buster
-#node:14.21.3-alpine3.17
-#node:12-alpine
+FROM node:18.16.0-alpine3.17 as builder
+# LABEL maintainer='COSANPA/PRODIGA'
+# LABEL maintainer=ramanajas@prodigasistemas.com.br
+# LABEL maintainer=rafaelneto.g@gmail.com
+ENV NODE_OPTIONS="--openssl-legacy-provider"
 
-#RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/html
+COPY . /var/www/html
 
-COPY . .
+WORKDIR /var/www/html
 
-#RUN npm install
-# RUN   npm cache verify \
-#    && npm install \
-#    && npm run build
-
-RUN   npm cache verify 
-RUN   npm install --legacy-peer-deps
-RUN   npm run build
-
-#COPY . .
+RUN   npm cache verify \
+   && npm uninstall react-scripts --legacy-peer-deps \
+   && npm install react-scripts@4.0.3 --legacy-peer-deps \
+   && npm install readline --legacy-peer-deps \
+   && npm run build
 
 EXPOSE 8080
 

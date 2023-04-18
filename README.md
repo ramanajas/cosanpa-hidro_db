@@ -92,7 +92,7 @@ This is a ongoing project and updates will be placed here
 
 ### Hasura without migrations
 
-      export DATABASE_URL='postgres://gis:desenv@192.168.31.240:5432/hidro_db_dev' \
+      export DATABASE_URL='postgres://gis:desenv@192.168.31.241:5432/hidro_db_dev' \
     ; docker container rm graph -f \
     ; docker container run \
                 --detach \
@@ -131,23 +131,20 @@ Query
 
 ### NodeJ
 
-      docker container rm nodej -f \
-    ; docker image rm cosanpa/nodej:12 \
-    ; docker image build \
-                --progress plain \
-                -t cosanpa/nodej:12 \
+      docker container rm api -f \
+    ; docker image rm cosanpa/nodej:18 \
+    ; docker image build -t cosanpa/nodej:18 \
                 $PWD/application \
     ; docker container run \
                 --detach \
-                --name server \
+                --name api \
                 --publish 8080:8081 \
                 --restart always \
                 --volume /etc/localtime:/etc/localtime:ro \
                 --env PORT=8081 \
                 --env NODE_ENV=production \
-                --env JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R' \
-                --env HOST_URL='http://localhost' \
-                cosanpa/nodej:12
+                --env HOST_URL='http://192.168.31.241' \
+                cosanpa/nodej:18
 
 #
 
