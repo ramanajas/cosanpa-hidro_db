@@ -66,3 +66,14 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+### Docker 
+
+
+      docker container rm cosanpa/statics -f \
+    ; docker image rm cosanpa/statics:18 \
+    ; docker image build -t cosanpa/statics:18 \
+                $PWD/application/statics 
+
+

@@ -60,7 +60,7 @@ This is a ongoing project and updates will be placed here
 
     rsync -azve 'ssh -p PORTA' --exclude=.git ORIGEM DESTINHO
 
-	  rsync -azve 'ssh' --exclude=logs --exclude=.git ../cosanpa-hidro_db lab:~
+	  rsync -aze 'ssh' --exclude=container --exclude=logs --exclude=.git ../cosanpa-hidro_db lab:~
 
 ## Build Manualy
     
@@ -92,14 +92,12 @@ This is a ongoing project and updates will be placed here
 
 ### Hasura without migrations
 
-      export DATABASE_URL='postgres://gis:desenv@192.168.31.241:5432/hidro_db_dev' \
+      export DATABASE_URL='postgres://gis:desenv@130.130.0.133:5432/hidro_db_dev' \
     ; docker container rm graph -f \
     ; docker container run \
                 --detach \
                 --name graph \
                 --publish 3001:3000 \
-                --publish 9893:9693 \
-                --publish 9895:9695 \
                 --restart always \
                 --volume /etc/localtime:/etc/localtime:ro \
                 --env HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
@@ -131,7 +129,8 @@ Query
 
 ### NodeJ
 
-      docker container rm api -f \
+      export URL_APP='http://130.130.0.133' \
+    ;  docker container rm api -f \
     ; docker image rm cosanpa/nodej:18 \
     ; docker image build -t cosanpa/nodej:18 \
                 $PWD/application \
@@ -141,9 +140,16 @@ Query
                 --publish 8080:8081 \
                 --restart always \
                 --volume /etc/localtime:/etc/localtime:ro \
-                --env PORT=8081 \
-                --env NODE_ENV=production \
-                --env HOST_URL='http://192.168.31.241' \
+                --env PORT="8081" \
+                --env NODE_ENV="production" \
+                --env HOST_URL=$URL_APP \
+                --env JWT_EXPIRES_IN="15m" \
+                --env JWT_REFRESH_EXPIRES_IN="90d" \
+                --env JWT_REFRESH_COOKIE_EXPIRES_IN="90" \
+                --env SENDGRID_USER="apikey" \
+                --env SENDGRID_PASS='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' \
+                --env HASURA_SECRET_KEY="myadminsecretkey" \
+                --env JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R' \
                 cosanpa/nodej:18
 
 #
@@ -187,8 +193,3 @@ Query
                 --env HASURA_GRAPHQL_MIGRATIONS_DIR=/hasura/migrations \
                 cosanpa/graph:1.3.3
 
-
-
-### Compile Manualy
-
-rm -rf node_modules/ build/ package-lock.json && npm install --legacy-peer-deps && npm update && npm -g outdated --depth=3

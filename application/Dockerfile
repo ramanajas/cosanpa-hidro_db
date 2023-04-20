@@ -18,12 +18,13 @@ RUN   npm cache verify \
 FROM node:18.16.0-alpine3.17
 
 COPY ./server /var/www/html
-COPY --from=builder /var/www/html/build/* /var/www/html/public/
+COPY --from=builder /var/www/html/build /var/www/html/public
 
 WORKDIR /var/www/html
 
-RUN   npm cache verify \
-   && npm install -g nodemon --cache /tmp/empty-cache \
+ENV NODE_OPTIONS="--openssl-legacy-provider"
+
+RUN   npm install -g nodemon --cache /tmp/empty-cache \
    && npm run \
    && npm install 
 

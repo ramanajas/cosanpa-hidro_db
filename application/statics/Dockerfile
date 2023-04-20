@@ -1,4 +1,4 @@
-FROM node:18.16.0-alpine3.17 as builder
+FROM node:18.16.0-alpine3.17
 # LABEL maintainer='COSANPA/PRODIGA'
 # LABEL maintainer=ramanajas@prodigasistemas.com.br
 # LABEL maintainer=rafaelneto.g@gmail.com
